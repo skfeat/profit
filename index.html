@@ -46,7 +46,7 @@
             .then(response => response.json())
             .then(data => {
                 // Update HTML with fetched data
-                document.getElementById('currentBalance').innerText = '₹' + ((data[0].view * 0.015).toFixed(2));
+                document.getElementById('currentBalance').innerText = '₹' + ((data[0].view * 0.0125).toFixed(2));
                 document.getElementById('totalViews').innerText = data[0].view;
                 document.getElementById('lastPaid').innerText = '₹' + data[0].lastPaid;
             })
