@@ -24,7 +24,7 @@
         </div>
         <div class="card  shadow rounded mx-3 my-5">
             <div class="card-body">
-                <h1 class="card-title text-bold" style="font-weight: bold;">Total Views</h1>
+                <h1 class="card-title text-bold" style="font-weight: bold;">Current Views</h1>
                 <h2 id="totalViews" class="card-title text-bold" style="color: rgb(0, 127, 116);">Loading...</h2>
             </div>
         </div>
@@ -56,7 +56,9 @@
             .catch(error => console.error('Error fetching data:', error));
         }
      data()
-     
+     window.onload = function() {
+            data();
+        };
     </script>
 </body>
 
