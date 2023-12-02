@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Update Payment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card  shadow rounded mx-3 my-5">
+                    <div class="card-body">
+                            <div class="mb-3">
+                                <label for="paymentAmount" class="form-label">Payment Amount</label>
+                                <input type="number" class="form-control" id="paymentAmount" placeholder="Amount">
+                                <label for="collectedViews" class="form-label">Collected Views</label>
+                                <input type="number" class="form-control" id="collectedViews" placeholder="Views">
+                            </div>
+                            <button class="btn btn-primary" onclick="addPayment()">Add Payment</button>
+                        </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card  shadow rounded mx-3 my-5">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="updateViews" class="form-label">Update Views</label>
+                            <input type="number" class="form-control" id="updateViews" placeholder="Views">
+                        </div>
+                        <button class="btn btn-primary" onclick="updateViews()">Update View</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card  shadow rounded mx-3 my-5">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="updateStatus" class="form-label">Update Status</label>
+                            <input type="text" class="form-control" id="updateStatus" placeholder="Status" value="Paid">
+                            <label for="paymentId" class="form-label">Payment ID</label>
+                            <input type="text" class="form-control" id="paymentId" placeholder="Payment ID">
+                        </div>
+                
+                        <button class="btn btn-primary" onclick="updatePayment()">Update Payment</button>
+                        <button class="btn btn-primary" onclick="window.location.href='http://localhost:3000/paymenthistory'">Payment History</button>
+                
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+    <script>
+        async function addPayment() {
+            const amount = document.getElementById('paymentAmount').value;
+            const view = document.getElementById('collectedViews').value;
+
+            // Validate input
+            if (!amount || !view) {
+                alert('Please enter both Payment Amount and Collected Views.');
+                return;
+            }
+
+            const data = {
+                amount: Number(amount),
+                view: Number(view)
+            };
+       
+            try {
+                const response = await fetch('https://trackprofit.vercel.app/addpayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    // Update button appearance on success
+                    const addButton = document.querySelector('.btn-primary');
+                    addButton.classList.remove('btn-primary');
+                    addButton.classList.add('btn-success');
+                    addButton.innerText = 'Payment Added';
+                } else {
+                    // Handle other response statuses if needed
+                    alert('Failed to add payment. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error adding payment:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+
+        async function updatePayment() {
+            const updateStatus = document.getElementById('updateStatus').value;
+            const paymentId = document.getElementById('paymentId').value;
+
+            // Validate input
+            if (!updateStatus || !paymentId) {
+                alert('Please enter both Update Status and Payment ID.');
+                return;
+            }
+
+            const data = {
+                status: updateStatus
+            };
+
+            try {
+                const response = await fetch(`  https://trackprofit.vercel.app/updatestatus/${paymentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('Payment status updated successfully.');
+                } else {
+                    // Handle other response statuses if needed
+                    alert('Failed to update payment status. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error updating payment status:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+
+        async function updateViews() {
+            const updatedViews = document.getElementById('updateViews').value;
+
+            // Validate input
+            if (!updatedViews) {
+                alert('Please enter the updated views.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`  https://trackprofit.vercel.app/putviews/${updatedViews}`, {
+                    method: 'GET'
+                });
+
+                if (response.ok) {
+                    alert('Views updated successfully.');
+                } else {
+                    // Handle other response statuses if needed
+                    alert('Failed to update views. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error updating views:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    </script>
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
