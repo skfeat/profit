@@ -8,57 +8,106 @@
         href="https://static-00.iconduck.com/assets.00/loan-money-icon-2048x2048-o516fb1v.png">
     <title>TrackProfit</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
 </head>
 
 <body>
 
-    <center class="container mt-5">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <center class="container mt-5">
 
-        <div class="card  shadow rounded mx-3 my-5">
-            <div class="card-body">
-                <h1 class="card-title text-bold" style="font-weight: bold;">Current Balance</h1>
-                <h2 id="currentBalance" class="card-title text-bold" style="color: rgb(29, 221, 35);">Loading...</h2>
+            <div class="card  shadow rounded mx-3 my-5">
+                <div class="card-body">
+                    <h1 class="card-title text-bold" style="font-weight: bold;">Current Balance</h1>
+                    <h2 id="currentBalance" class="card-title text-bold" style="color: rgb(29, 221, 35);">Loading...</h2>
+                </div>
             </div>
-        </div>
-        <div class="card  shadow rounded mx-3 my-5">
-            <div class="card-body">
-                <h1 class="card-title text-bold" style="font-weight: bold;">Current Views</h1>
-                <h2 id="totalViews" class="card-title text-bold" style="color: rgb(0, 127, 116);">Loading...</h2>
+            <div class="card  shadow rounded mx-3 my-5">
+                <div class="card-body">
+                    <h1 class="card-title text-bold" style="font-weight: bold;">Current Views</h1>
+                    <h2 id="totalViews" class="card-title text-bold" style="color: rgb(0, 127, 116);">Loading...</h2>
+                </div>
             </div>
-        </div>
 
-        <div class="card  shadow rounded mx-3 my-5">
-            <div class="card-body">
-                <h1 class="card-title text-bold" style="font-weight: bold;">Total Paid</h1>
-                <h2 id="lastPaid" class="card-title text-bold" style="color: rgb(255, 5, 5);">Loading...</h2>
+            <div class="my-1 mb-3">
+                <button type="button" onclick="window.location.reload();" class="btn btn-primary btn-lg">Refresh</button>
             </div>
-        </div>
-        <div class="my-1">
-            <button type="button" onclick="window.location.reload();" class="btn btn-primary btn-lg">Refresh</button>
-        </div>
-    </center>
+
+<h3>Payment History</h3>
+<hr><div id="paymentHistoryContainer"></div>
+        </center>
+
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
 
     <script>
-        function data() {
-            fetch('https://trackprofit.vercel.app/getdata')
+        // Fetch data from the API
+        fetch('https://trackprofit.vercel.app/getdata')
             .then(response => response.json())
             .then(data => {
+              
                 // Update HTML with fetched data
                 document.getElementById('currentBalance').innerText = '₹' + ((data[0].view * 0.011).toFixed(2));
                 document.getElementById('totalViews').innerText = data[0].view;
-                document.getElementById('lastPaid').innerText = '₹' + data[0].lastPaid;
-            })
-            .catch(error => console.error('Error fetching data:', error));
-        }
-     data()
-     window.onload = function() {
-            data();
-        };
+               // Populate Payment History
+               const paymentHistoryContainer = document.getElementById('paymentHistoryContainer');
+payment = (data[0].paymentHistory).reverse()
+
+payment.forEach(payment => {
+  
+    const paymentCard = document.createElement('div');
+    paymentCard.classList.add('card', 'rounded', 'mx-3', 'my-5');
+    const paymentCardBody = document.createElement('div');
+    paymentCardBody.classList.add('card-body');
+
+    const rowDiv = document.createElement('div');
+    rowDiv.classList.add('row');
+
+    const leftCol = document.createElement('div');
+    leftCol.classList.add('col-6');
+    const dateElement = document.createElement('h5');
+    dateElement.style.fontWeight = 'bold';
+    dateElement.innerText = 'Date: ' + new Date(payment.date).toLocaleTimeString() + ' ' + new Date(payment.date).toLocaleDateString();
+    const amountElement = document.createElement('h5');
+    amountElement.style.fontWeight = 'bold';
+    amountElement.innerText = 'Amount: ₹' + payment.amount;
+    const viewsElement = document.createElement('h5');
+    viewsElement.style.fontWeight = 'bold';
+    viewsElement.innerText = 'Views: ' + payment.view;
+
+    leftCol.appendChild(dateElement);
+    leftCol.appendChild(amountElement);
+    leftCol.appendChild(viewsElement);
+
+    const rightCol = document.createElement('div');
+    rightCol.classList.add('col-6');
+    const statusHeader = document.createElement('h5');
+    statusHeader.style.fontWeight = 'bold';
+    statusHeader.innerText = 'Payment Status';
+    const statusElement = document.createElement('h4');
+    statusElement.innerText = payment.status;
+
+    // Set color based on payment status
+    if (payment.status.toLowerCase() === 'pending') {
+        statusElement.style.color = 'red';
+    } else {
+        statusElement.style.color = 'green';
+    }
+
+    rightCol.appendChild(statusHeader);
+    rightCol.appendChild(statusElement);
+
+    rowDiv.appendChild(leftCol);
+    rowDiv.appendChild(rightCol);
+    paymentCardBody.appendChild(rowDiv);
+    paymentCard.appendChild(paymentCardBody);
+    paymentHistoryContainer.appendChild(paymentCard);
+});
+})
+.catch(error => console.error('Error fetching data:', error));
     </script>
 </body>
 
