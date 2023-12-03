@@ -50,7 +50,7 @@
             .then(data => {
               
                 // Update HTML with fetched data
-                document.getElementById('currentBalance').innerText = '₹' + ((data[0].view * 0.01).toFixed(2));
+                document.getElementById('currentBalance').innerText = '₹' + ((data[0].view * 0.0085).toFixed(2));
                 document.getElementById('totalViews').innerText = data[0].view;
                // Populate Payment History
                const paymentHistoryContainer = document.getElementById('paymentHistoryContainer');
