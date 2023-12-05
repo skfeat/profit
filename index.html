@@ -28,6 +28,15 @@
     }
 }
 
+@keyframes blink {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+      }
+
+      .blinking-img {
+        animation: blink 1s infinite;
+      }
 .noblink {
     margin-right: 0.5rem;
 }
@@ -40,13 +49,13 @@
         <div class="card  shadow rounded mx-3 my-5">
             <div class="card-body">
                 <h1 class="card-title text-bold" style="font-weight: bold;"> Estimated Earnings </h1>
-                <h2 id="currentBalance" class="card-title text-bold" style="color: rgb(29, 221, 35);">Loading...</h2>
+                <h1 id="currentBalance" class="card-title text-bold" style="color: rgb(29, 221, 35); font-size: 2.5rem;">....</h1>
             </div>
         </div>
         <div class="card  shadow rounded mx-3 my-5">
             <div class="card-body">
-                <h1 class="card-title text-bold" style="font-weight: bold;">Live Views<span style="font-size:20px;" class="blink-fade"> 🔴</span></h1>
-                <h2 id="totalViews" class="card-title text-bold" style="color: rgb(0, 127, 116);">Loading...</h2>
+                <h1 class="card-title text-bold" style="font-weight: bold;">Page Views <img class="blinking-img" src="https://static.vecteezy.com/system/resources/thumbnails/016/017/082/small/live-live-transparent-live-icon-free-png.png" width="70px"></h1>
+                <h1 id="totalViews" class="card-title text-bold pb-4" style="color: rgb(0, 127, 116); font-size: 2.5rem;">....</h1>
             </div>
         </div>
         <h3>Payment History</h3>
@@ -59,6 +68,16 @@
         crossorigin="anonymous"></script>
 
     <script>
+function formatNumberWithCommas(number) {
+  // Convert the number to a string
+  const numberString = number.toString();
+
+  // Use regular expression to add commas
+  const formattedNumber = numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  return formattedNumber;
+}
+
         function fetchData() {
             // Fetch data from the API
             fetch('https://trackprofit.vercel.app/getdata')
@@ -66,7 +85,7 @@
                 .then(data => {
                     // Update HTML with fetched data
                     document.getElementById('currentBalance').innerText = '₹' + ((data[0].view * 0.0099).toFixed(2));
-                    document.getElementById('totalViews').innerText = data[0].view;
+                    document.getElementById('totalViews').innerText = formatNumberWithCommas(data[0].view);
 
                     // Populate Payment History
                     const paymentHistoryContainer = document.getElementById('paymentHistoryContainer');
