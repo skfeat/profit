@@ -9,38 +9,48 @@
     <title>TrackProfit</title>
 </head>
 <style>
-.blink-fade {
-    color: red;
-    margin-right: 0.5rem;
-    animation: blink-fade 2s steps(5, start) infinite;
-    -webkit-animation: blink-fade 1s steps(5, start) infinite;
-}
-
-@keyframes blink-fade {
-    50% {
-        opacity: 0;
+    .blink-fade {
+        color: red;
+        margin-right: 0.5rem;
+        animation: blink-fade 2s steps(5, start) infinite;
+        -webkit-animation: blink-fade 1s steps(5, start) infinite;
     }
-}
 
-@-webkit-keyframes blink-fade {
-    50% {
-        opacity: 0;
+    @keyframes blink-fade {
+        50% {
+            opacity: 0;
+        }
     }
-}
 
-@keyframes blink {
-        0% { opacity: 1; }
-        50% { opacity: 0.5; }
-        100% { opacity: 1; }
-      }
+    @-webkit-keyframes blink-fade {
+        50% {
+            opacity: 0;
+        }
+    }
 
-      .blinking-img {
+    @keyframes blink {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .blinking-img {
         animation: blink 1s infinite;
-      }
-.noblink {
-    margin-right: 0.5rem;
-}
+    }
+
+    .noblink {
+        margin-right: 0.5rem;
+    }
 </style>
+
 <body>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -48,14 +58,32 @@
     <center class="container mt-5">
         <div class="card  shadow rounded mx-3 my-5">
             <div class="card-body">
-                <h1 class="card-title text-bold" style="font-weight: bold;"> Estimated Earnings </h1>
-                <h1 id="currentBalance" class="card-title text-bold" style="color: rgb(29, 221, 35); font-size: 2.5rem;">....</h1>
+                <h1 class="card-title text-bold" style="font-weight: bold;">Next Payment</h1>
+                <h1 id="currentBalance" class="card-title text-bold"
+                    style="color: rgb(29, 221, 35); font-size: 2.5rem;">....</h1>
             </div>
         </div>
         <div class="card  shadow rounded mx-3 my-5">
             <div class="card-body">
-                <h1 class="card-title text-bold" style="font-weight: bold;">Page Views <img class="blinking-img" src="https://static.vecteezy.com/system/resources/thumbnails/016/017/082/small/live-live-transparent-live-icon-free-png.png" width="70px"></h1>
-                <h1 id="totalViews" class="card-title text-bold pb-4" style="color: rgb(0, 127, 116); font-size: 2.5rem;">....</h1>
+                <h1 class="card-title text-bold" style="font-weight: bold;">Page Views <img class="blinking-img"
+                        src="https://static.vecteezy.com/system/resources/thumbnails/016/017/082/small/live-live-transparent-live-icon-free-png.png"
+                        width="70px"></h1>
+                <h1 id="totalViews" class="card-title text-bold pb-4"
+                    style="color: rgb(248, 33, 0); font-size: 2.5rem;">....</h1>
+            </div>
+        </div>
+        <div class="card  shadow rounded mx-3 my-5">
+            <div class="card-body">
+                <h1 class="card-title text-bold" style="font-weight: bold;"> Recieved Amount </h1>
+                <h1 id="statusReceived" class="card-title text-bold" style="color: rgb(1, 84, 13); font-size: 2.5rem;">
+                    ....</h1>
+            </div>
+        </div>
+        <div class="card  shadow rounded mx-3 my-5">
+            <div class="card-body">
+                <h1 class="card-title text-bold" style="font-weight: bold;"> Total Paid </h1>
+                <h1 id="statusPaid" class="card-title text-bold" style="color: rgb(5, 106, 222); font-size: 2.5rem;">
+                    ....</h1>
             </div>
         </div>
         <h3>Payment History</h3>
@@ -68,15 +96,40 @@
         crossorigin="anonymous"></script>
 
     <script>
-function formatNumberWithCommas(number) {
-  // Convert the number to a string
-  const numberString = number.toString();
+        function formatNumberWithCommas(number) {
+            // Convert the number to a string
+            const numberString = number.toString();
 
-  // Use regular expression to add commas
-  const formattedNumber = numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            // Use regular expression to add commas
+            const formattedNumber = numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-  return formattedNumber;
+            return formattedNumber;
+        }
+
+        function calculateReceivedAmount(paymentHistory) {
+    let sum = 0;
+    console.log(paymentHistory)
+    for (let i = 0; i < paymentHistory.length; i++) {
+        const status = paymentHistory[i].status.trim().toLowerCase();
+        if (status === "received") {
+            sum += paymentHistory[i].amount;
+        }
+    }
+    return sum;
 }
+    function calculatePaidAmount(paymentHistory) {
+    let sumx = 0;
+    console.log(paymentHistory)
+    for (let i = 0; i < paymentHistory.length; i++) {
+        const status = paymentHistory[i].status.trim().toLowerCase();
+        if (status === "paid") {
+            sumx += paymentHistory[i].amount;
+        }
+    }
+    return sumx;
+}
+
+
 
         function fetchData() {
             // Fetch data from the API
@@ -86,7 +139,13 @@ function formatNumberWithCommas(number) {
                     // Update HTML with fetched data
                     document.getElementById('currentBalance').innerText = '₹' + ((data[0].view * 0.0099).toFixed(2));
                     document.getElementById('totalViews').innerText = formatNumberWithCommas(data[0].view);
-
+                    const statusReceivedElement = document.getElementById("statusReceived");
+                    const sumOfReceivedAmount = calculateReceivedAmount(data[0].paymentHistory);
+                    statusReceivedElement.textContent = `₹${sumOfReceivedAmount}`;
+                    // Populate Payment History
+                    const statusPaidElement = document.getElementById("statusPaid");
+                    const sumOfPaidAmount = calculatePaidAmount(data[0].paymentHistory);
+                    statusPaidElement.textContent = `₹${sumOfPaidAmount}`;
                     // Populate Payment History
                     const paymentHistoryContainer = document.getElementById('paymentHistoryContainer');
                     payment = (data[0].paymentHistory).reverse();
@@ -95,55 +154,55 @@ function formatNumberWithCommas(number) {
                     paymentHistoryContainer.innerHTML = '';
 
                     payment.forEach(payment => {
-  
-  const paymentCard = document.createElement('div');
-  paymentCard.classList.add('card', 'rounded', 'mx-3', 'my-2');
-  const paymentCardBody = document.createElement('div');
-  paymentCardBody.classList.add('card-body');
 
-  const rowDiv = document.createElement('div');
-  rowDiv.classList.add('row');
+                        const paymentCard = document.createElement('div');
+                        paymentCard.classList.add('card', 'rounded', 'mx-3', 'my-2');
+                        const paymentCardBody = document.createElement('div');
+                        paymentCardBody.classList.add('card-body');
 
-  const leftCol = document.createElement('div');
-  leftCol.classList.add('col-6');
-  const dateElement = document.createElement('h5');
-  dateElement.style.fontWeight = 'bold';
-  dateElement.innerText = 'Date: ' + new Date(payment.date).toLocaleTimeString() + ' ' + new Date(payment.date).toLocaleDateString();
-  const amountElement = document.createElement('h5');
-  amountElement.style.fontWeight = 'bold';
-  amountElement.innerText = 'Amount: ₹' + payment.amount;
-  const viewsElement = document.createElement('h5');
-  viewsElement.style.fontWeight = 'bold';
-  viewsElement.innerText = 'Views: ' + payment.view;
+                        const rowDiv = document.createElement('div');
+                        rowDiv.classList.add('row');
 
-  leftCol.appendChild(dateElement);
-  leftCol.appendChild(amountElement);
-  leftCol.appendChild(viewsElement);
+                        const leftCol = document.createElement('div');
+                        leftCol.classList.add('col-6');
+                        const dateElement = document.createElement('h5');
+                        dateElement.style.fontWeight = 'bold';
+                        dateElement.innerText = 'Date: ' + new Date(payment.date).toLocaleTimeString() + ' ' + new Date(payment.date).toLocaleDateString();
+                        const amountElement = document.createElement('h5');
+                        amountElement.style.fontWeight = 'bold';
+                        amountElement.innerText = 'Amount: ₹' + payment.amount;
+                        const viewsElement = document.createElement('h5');
+                        viewsElement.style.fontWeight = 'bold';
+                        viewsElement.innerText = 'Views: ' + payment.view;
 
-  const rightCol = document.createElement('div');
-  rightCol.classList.add('col-6');
-  const statusHeader = document.createElement('h5');
-  statusHeader.style.fontWeight = 'bold';
-  statusHeader.innerText = 'Payment Status';
-  const statusElement = document.createElement('h4');
-  statusElement.innerText = payment.status;
+                        leftCol.appendChild(dateElement);
+                        leftCol.appendChild(amountElement);
+                        leftCol.appendChild(viewsElement);
 
-  // Set color based on payment status
-  if (payment.status.toLowerCase() === 'pending') {
-      statusElement.style.color = 'red';
-  } else {
-      statusElement.style.color = 'green';
-  }
+                        const rightCol = document.createElement('div');
+                        rightCol.classList.add('col-6');
+                        const statusHeader = document.createElement('h5');
+                        statusHeader.style.fontWeight = 'bold';
+                        statusHeader.innerText = 'Payment Status';
+                        const statusElement = document.createElement('h4');
+                        statusElement.innerText = payment.status;
 
-  rightCol.appendChild(statusHeader);
-  rightCol.appendChild(statusElement);
+                        // Set color based on payment status
+                        if (payment.status.toLowerCase() === 'pending') {
+                            statusElement.style.color = 'red';
+                        } else {
+                            statusElement.style.color = 'green';
+                        }
 
-  rowDiv.appendChild(leftCol);
-  rowDiv.appendChild(rightCol);
-  paymentCardBody.appendChild(rowDiv);
-  paymentCard.appendChild(paymentCardBody);
-  paymentHistoryContainer.appendChild(paymentCard);
-});
+                        rightCol.appendChild(statusHeader);
+                        rightCol.appendChild(statusElement);
+
+                        rowDiv.appendChild(leftCol);
+                        rowDiv.appendChild(rightCol);
+                        paymentCardBody.appendChild(rowDiv);
+                        paymentCard.appendChild(paymentCardBody);
+                        paymentHistoryContainer.appendChild(paymentCard);
+                    });
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
