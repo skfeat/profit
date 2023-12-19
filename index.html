@@ -137,7 +137,7 @@
                 .then(response => response.json())
                 .then(data => {
                     // Update HTML with fetched data
-                    document.getElementById('currentBalance').innerText = '₹' + ((data[0].view * 0.0099).toFixed(2));
+                    document.getElementById('currentBalance').innerText = '₹' + ((data[0].view * 0.0085).toFixed(2));
                     document.getElementById('totalViews').innerText = formatNumberWithCommas(data[0].view);
                     const statusReceivedElement = document.getElementById("statusReceived");
                     const sumOfReceivedAmount = calculateReceivedAmount(data[0].paymentHistory);
