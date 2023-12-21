@@ -131,7 +131,7 @@
                 .then(response => response.json())
                 .then(data => {
                     // Update HTML with fetched data
-                    document.getElementById('currentBalance').innerText = '₹' + ((data[0].view * 0.0095).toFixed(2));
+                    document.getElementById('currentBalance').innerText = '₹' + ((data[0].view * 0.009).toFixed(2));
                     document.getElementById('totalViews').innerText = formatNumberWithCommas(data[0].view);
                     // Populate Payment History
                     const statusPaidElement = document.getElementById("statusPaid");
