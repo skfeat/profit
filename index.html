@@ -132,9 +132,9 @@
                 .then(response => response.json())
                 .then(data => {
                     // Update HTML with fetched data
-                  //  document.getElementById('currentBalance').innerText = '₹' + ((data[0].view * 0.009).toFixed(2));
-                  //  document.getElementById('totalViews').innerText = 0;
-                   // document.getElementById('totalViews').innerText = formatNumberWithCommas(data[0].view);
+                  document.getElementById('currentBalance').innerText = '₹' + ((data[0].view * 0.0065).toFixed(2));
+                   document.getElementById('totalViews').innerText = 0;
+                  document.getElementById('totalViews').innerText = formatNumberWithCommas(data[0].view);
                     // Populate Payment History
                     const statusPaidElement = document.getElementById("statusPaid");
                     const sumOfPaidAmount = calculatePaidAmount(data[0].paymentHistory);
@@ -202,7 +202,7 @@
 
         // Fetch data initially
         fetchData();
-alert("Updation Terminated")
+
         // Fetch data every second
         setInterval(fetchData, 500);
     </script>
